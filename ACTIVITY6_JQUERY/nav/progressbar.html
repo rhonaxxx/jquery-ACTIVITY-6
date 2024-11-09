@@ -1,0 +1,134 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/customstyle.css">
+    <link rel="stylesheet" href="../css/jquery-ui.css"> <!-- Still needed for jQuery UI styling -->
+    <script src="../js/jquery-3.7.1.min.js"></script>
+    <script src="../js/jquery-ui.js"></script>
+    <script>
+        $( function() {
+          var progressTimer,
+            progressbar = $( "#progressbar" ),
+            progressLabel = $( ".progress-label" ),
+            dialogButtons = [{
+              text: "Cancel Download",
+              click: closeDownload
+            }],
+            dialog = $( "#dialog" ).dialog({
+              autoOpen: false,
+              closeOnEscape: false,
+              resizable: false,
+              buttons: dialogButtons,
+              open: function() {
+                progressTimer = setTimeout( progress, 2000 );
+              },
+              beforeClose: function() {
+                downloadButton.button( "option", {
+                  disabled: false,
+                  label: "Start Download"
+                });
+              }
+            }),
+            downloadButton = $( "#downloadButton" )
+              .button()
+              .on( "click", function() {
+                $( this ).button( "option", {
+                  disabled: true,
+                  label: "Downloading..."
+                });
+                dialog.dialog( "open" );
+              });
+       
+          progressbar.progressbar({
+            value: false,
+            change: function() {
+              progressLabel.text( "Current Progress: " + progressbar.progressbar( "value" ) + "%" );
+            },
+            complete: function() {
+              progressLabel.text( "Complete!" );
+              dialog.dialog( "option", "buttons", [{
+                text: "Close",
+                click: closeDownload
+              }]);
+              $(".ui-dialog button").last().trigger( "focus" );
+            }
+          });
+       
+          function progress() {
+            var val = progressbar.progressbar( "value" ) || 0;
+       
+            progressbar.progressbar( "value", val + Math.floor( Math.random() * 3 ) );
+       
+            if ( val <= 99 ) {
+              progressTimer = setTimeout( progress, 50 );
+            }
+          }
+       
+          function closeDownload() {
+            clearTimeout( progressTimer );
+            dialog
+              .dialog( "option", "buttons", dialogButtons )
+              .dialog( "close" );
+            progressbar.progressbar( "value", false );
+            progressLabel
+              .text( "Starting download..." );
+            downloadButton.trigger( "focus" );
+          }
+        } );
+        </script>
+         <style>
+            #progressbar {
+              margin-top: 20px;
+            }
+           
+            .progress-label {
+              font-weight: bold;
+              text-shadow: 1px 1px 0 #fff;
+            }
+           
+            .ui-dialog-titlebar-close {
+              display: none;
+            }
+            </style>
+    <title>Document</title>
+</head>
+<body>
+    <header>
+        <h1>College of Information and Computing Sciences</h1>
+        <h3>Bachelor of Science in Information Systems</h3>
+        <h4>RONALYN ZULUETA</h4>
+        <a href="../index.html">Home</a>
+    </header>
+    
+    <nav>
+
+        <ul class="navigation_menu">
+            <h3>Widgets</h3>
+            <li><a href="accordin.html">Accordion</a></li>
+            <li><a href="autocomplete.html">Autocomplete</a></li>
+            <li><a href="button.html">Button</a></li>
+            <li><a href="checkboxradio.html">Checkboxradio</a></li>
+            <li><a href="controlgroup.html">Controlgroup</a></li>
+            <li><a href="datepicker.html">Datepicker</a></li>
+            <li><a href="dialog.html">Dialog</a></li>
+            <li><a href="menu.html">Menu</a></li>
+            <li><a href="progressbar.html">Progressbar</a></li>
+            <li><a href="selectmenu.html">Selectmenu</a></li>
+            <li><a href="slider.html">Slider</a></li>
+            <li><a href="spinner.html">Spinner</a></li>
+            <li><a href="tabs.html">Tabs</a></li>
+            <li><a href="tooltip.html">Tooltip</a></li>
+        </ul>
+    </nav>
+    
+    <article>
+        <h1>Progress Bar</h1>
+        <div id="dialog" title="File Download">
+            <div class="progress-label">Starting download...</div>
+            <div id="progressbar"></div>
+          </div>
+          <button id="downloadButton">Start Download</button>
+    </article>
+</body>
+</html>
